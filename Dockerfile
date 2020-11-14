@@ -22,7 +22,7 @@ RUN R -e "install.packages(c('httr', 'dplyr', 'tidyr', 'stringr', 'forcats', 'ti
 
 # copy the app to the image
 RUN mkdir /root/sala
-COPY euler /root/sala
+COPY sala /root/sala
 
 COPY Rprofile.site /usr/lib/R/etc/
 
