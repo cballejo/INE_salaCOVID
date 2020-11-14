@@ -1,0 +1,250 @@
+---
+output:
+  html_document: default
+---
+
+## Datos para descargar
+
+Todas las tablas de datos se encuentran en formato *texto separado por punto y comas* (*.csv)  
+
+### Casos positivos acumulados por partido y fecha
+
+**Variables**: *fecha, partido, casos, acumulados*
+
+Haga click para [Descargar](https://www.dropbox.com/s/8xvmthkjuo44n3b/Casos%20positivos%20acumulados.csv?dl=1)
+
+**Observaciones:** 
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-c3ow">Variable</th>
+    <th class="tg-c3ow">Descripción</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky">fecha</td>
+    <td class="tg-0pky">fecha construida a partir de la fecha de inicio de síntomas (y la fecha de apertura para aquellos que no tengan fecha de inicio de síntomas)</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">partido</td>
+    <td class="tg-0pky">partidos que integra la zona sanitaria VIII</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">casos</td>
+    <td class="tg-0pky">casos positivos confirmados por fecha y partido</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">acumulados</td>
+    <td class="tg-0pky">casos acumulados por fecha para cada partido de la zona sanitaria</td>
+  </tr>
+</tbody>
+</table>
+
+### Datos resumidos por partido
+
+**Variables**: *partido, total, positivos, pos_laboratorio, pos_epi, activos, sospechosos, fallecidos, poblacion, incidencia, mortalidad, letalidad*
+
+Haga click para [Descargar](https://www.dropbox.com/s/z6fwtx1sjzy9817/Datos%20por%20partido.csv?dl=1)
+
+**Observaciones:** La siguiente es la descripción de las variables de la tabla.
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-baqh{text-align:center;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-baqh">Variable</th>
+    <th class="tg-baqh">Descripción</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">partido</td>
+    <td class="tg-0lax">cada uno de los 16 partidos que integra la zona sanitaria VIII</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">total</td>
+    <td class="tg-0lax">total de registros denunciados a SISA</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">positivos</td>
+    <td class="tg-0lax">total de casos confirmados positivos Covid-19 por partido</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">pos_laboratorio</td>
+    <td class="tg-0lax">total de casos confirmados positivos Covid-19 por laboratorio por partido</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">pos_epi</td>
+    <td class="tg-0lax">total de confirmados positivos Covid-19 por criterio clínico-epidemiológico por partido</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">activos</td>
+    <td class="tg-0lax">total de casos activos a la fecha por partido</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">sospechosos</td>
+    <td class="tg-0lax">total de casos sospechosos sin determinar a la fecha por partido</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">fallecidos</td>
+    <td class="tg-0lax">total de casos confirmados fallecidos a la fecha por partido</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">incidencia</td>
+    <td class="tg-0lax">incidencia acumulada de casos positivos x 100000 habitantes por partido</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">mortalidad</td>
+    <td class="tg-0lax">tasa de mortalidad x 1000000 habitantes por partido</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">letalidad</td>
+    <td class="tg-0lax">tasa de letalidad (%) por partido</td>
+  </tr>
+</tbody>
+</table>
+
+------------------------------------------------------------------------
+
+### Tabla completa por fecha
+
+**Variables:** *partido, fecha, sepi, sexo, grupo_edad, clasi, activo, fallecido, fecha_fallecimiento, clasificacion_resumen*
+
+Haga click para [Descargar](https://www.dropbox.com/s/daiifafya53r7lu/Tabla%20completa.csv?dl=1)
+
+**Observaciones:** La siguiente es la descripción de las variables de la tabla.
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-baqh{text-align:center;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-baqh">Variable</th>
+    <th class="tg-baqh">Descripción</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">partido</td>
+    <td class="tg-0lax">partidos que integra la zona sanitaria VIII</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">fecha</td>
+    <td class="tg-0lax">fecha construida a partir de la fecha de inicio de síntomas (y la fecha de apertura para aquellos que no tengan fecha de inicio de síntomas)</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">sepi</td>
+    <td class="tg-0lax">semana epidemiológica de la variable fecha</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">sexo</td>
+    <td class="tg-0lax">semana epidemiológica de la variable fecha</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">grupo_edad</td>
+    <td class="tg-0lax">grupo etario (intervalos regulares cada 10 años)</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">clasi</td>
+    <td class="tg-0lax">clasificación según descartado, sospechoso, confirmado por laboratorio o confirmado por criterio epidemiologico.</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">activo</td>
+    <td class="tg-0lax">caso activo si o no</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">fallecido</td>
+    <td class="tg-0lax">caso fallecido si o no</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">fecha_fallecimiento</td>
+    <td class="tg-0lax">fecha de obito para fallecimiento = si</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">clasificacion_resumen</td>
+    <td class="tg-0lax">resumen de clasificación según descartado, sospechoso, confirmado o sin clasificar</td>
+  </tr>
+</tbody>
+</table>
+
+------------------------------------------------------------------------
+
+### Fallecidos por partido y fecha de fallecimiento
+
+**Variables:** *partido, sexo, grupo_edad, fecha_fallecimiento, sepi_fallecimiento*
+
+Haga click para [Descargar](https://www.dropbox.com/s/94n7fgvmjjiulrs/Fallecidos.csv?dl=1)
+
+**Observaciones:** La siguiente es la descripción de las variables de la tabla.
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-baqh{text-align:center;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-baqh">Variable</th>
+    <th class="tg-baqh">Descripción</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">partido</td>
+    <td class="tg-0lax">partidos que integra la zona sanitaria VIII</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">sexo</td>
+    <td class="tg-0lax">sexo de la persona (F = femenino, M = masculino, NR = No registrado)</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">grupo_edad</td>
+    <td class="tg-0lax">grupo etario (intervalos regulares cada 10 años)</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">fecha_fallecimiento</td>
+    <td class="tg-0lax">fecha de obito</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">sepi_fallecimiento</td>
+    <td class="tg-0lax">semana epidemiológica de la variable fecha_fallecimiento</td>
+  </tr>
+</tbody>
+</table>
+
+------------------------------------------------------------------------
+
+**Fuente de los datos:** Base publica abierta **SISA** publicada por el **Ministerio de Salud de la Nación Argentina**  
+
+Disponible en: http://sisa.msal.gov.ar/datos/descargas/covid-19/files/Covid19Casos.csv 

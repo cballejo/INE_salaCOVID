@@ -1,17 +1,29 @@
 library(shiny)
 #library(shinySignals)   # devtools::install_github("hadley/shinySignals")
-library(tidyverse)
+#library(tidyverse)
+library(httr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(forcats)
+library(tibble)
+library(readr)
 library(lubridate)
-library(tsibble)
+#library(tsibble)
 library(shinydashboard)
+library(shinydashboardPlus)
 library(highcharter)
 library(rlang)
 library(shinyWidgets)
 #library(DT)
 library(tmap)
 library(sf)
-library(RCurl)
-library(googlesheets4)
+#library(rdrop2)
+library(httr)
+library(waiter)
+library(treemap)
+#library(reactable)
+
 
 
 #options(highcharter.theme = hc_theme_ggplot2())
@@ -25,4 +37,5 @@ modulo_lectura <- function(input, output, session){
 source("inicio.R")
 
 }
+
 

@@ -10,7 +10,8 @@ server <- function(input, output, session) {
                   tabName = "Graficos_zona",
                   icon = icon('line-chart'))),
       menuItem("Información por partidos", tabName = "Partidos", icon = icon("dashboard")),
-      menuItem("Mapa Zona", tabName = "Mapa", icon = icon("map-marked-alt"))
+      menuItem("Mapa Zona", tabName = "Mapa", icon = icon("map-marked-alt")),
+      menuItem("Datos", tabName = "Datos", icon = icon("table"))
       #          menuSubItem("Casos",
       #                      tabName = "Casos",
       #                      icon = icon('line-chart')),
@@ -26,8 +27,10 @@ server <- function(input, output, session) {
           )
   })
   
+
+  
   output$Refresh1 <- renderText({
-    toString(format(today(), format = "%A  %d %b %Y"))
+    toString(format(today(tzone = "America/Buenos_Aires"), format = "%A  %d %b %Y"))
   })
   
 
@@ -45,7 +48,7 @@ server <- function(input, output, session) {
 
   output$zona2 <- renderVal <- renderValueBox({
     valueBox(value = tags$p(ultimo_zona[1,3], style = "font-size: 70%;"),
-             subtitle = tags$p("Total diagnosticados en el día",  style = "font-size: 90%;"),
+             subtitle = tags$p("Total de nuevos eventos SISA",  style = "font-size: 90%;"),
       icon = icon(name = "user"),
       color = "blue"
     )
@@ -53,7 +56,7 @@ server <- function(input, output, session) {
   
   output$zona3 <- renderVal <- renderValueBox({
     valueBox(value = tags$p(ultimo_zona[1,4], style = "font-size: 70%;"),
-             subtitle = tags$p("Positivos diagnosticados en el día", style = "font-size: 90%;"),  
+             subtitle = tags$p("Positivos diagnosticados", style = "font-size: 90%;"),  
              icon = icon(name = "virus"),
              color = "red"
     )
@@ -61,7 +64,7 @@ server <- function(input, output, session) {
   
   output$zona4 <- renderVal <- renderValueBox({
     valueBox(value = tags$p(ultimo_zona[1,5], style = "font-size: 70%;"), 
-             subtitle = tags$p("Positivos por laboratorio", style = "font-size: 90%;"),  
+             subtitle = tags$p("Por laboratorio (PCR)", style = "font-size: 90%;"),  
              icon = icon(name = "microscope"),
              color = "orange"
     )
@@ -69,7 +72,7 @@ server <- function(input, output, session) {
   
   output$zona5 <- renderVal <- renderValueBox({
     valueBox(value = tags$p(ultimo_zona[1,6], style = "font-size: 70%;"),
-             subtitle = tags$p("Positivos por criterio epidemiológico", style = "font-size: 90%;"),
+             subtitle = tags$p("Por criterio epidemiológico", style = "font-size: 90%;"),
              icon = icon(name = "user-md"),
              color = "teal"
     )
@@ -77,7 +80,7 @@ server <- function(input, output, session) {
   
   output$zona2_1 <- renderVal <- renderValueBox({
     valueBox(value = tags$p(sum(acum_zona[,2]), style = "font-size: 70%;"),
-             subtitle = tags$p("Total acumulados SISA", style = "font-size: 90%;"),
+             subtitle = tags$p("Total eventos acumulados SISA", style = "font-size: 90%;"),
              icon = icon(name = "user"),
              color = "blue"
     )
@@ -117,7 +120,7 @@ server <- function(input, output, session) {
   
   output$zona2_6 <- renderVal <- renderValueBox({
     valueBox(value = tags$p(sum(acum_zona[,7]), style = "font-size: 70%;"),
-             subtitle = tags$p("Sospechosos s/ determinar", style = "font-size: 90%;"),
+             subtitle = tags$p("Sospechosos sin determinar", style = "font-size: 90%;"),
              icon = icon(name = "user-secret"),
              color = "purple"
     )
@@ -371,7 +374,7 @@ server <- function(input, output, session) {
                data= mujeres,
                color = "purple"))  
    
-   hc %>% hc_title(text = "Casos acumulados por sexo y grupo etario") %>% 
+   hc %>% hc_title(text = "") %>% 
      hc_subtitle(text = as.character(input$partido)) %>%
      hc_caption(
        text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>% 
@@ -441,7 +444,7 @@ hc <- highchart() %>%
                 sort = T) 
 
 hc %>% 
-     hc_title(text = "Positivos COVID-19 por semana epidemiológica") %>% 
+     hc_title(text = "") %>% 
      hc_subtitle(text = as.character(input$partido)) %>%
      hc_caption(
        text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
@@ -533,7 +536,7 @@ hc %>%
                                    pointPadding = 0))
   
   hc %>%
-    hc_title(text = "Casos diarios y media movil 7 días") %>%
+    hc_title(text = "") %>%
     hc_subtitle(text = as.character(input$partido))  %>%
     hc_caption(
       text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
@@ -614,18 +617,20 @@ hc %>%
     
     
     hc <- highchart() %>%
-      hc_xAxis(type = "datetime", labels = list(rotation = 90, step = 1, padding = 1)) %>%
+      hc_xAxis(type = "datetime", labels = list(rotation = 90, step = 1, padding = 1, xDateFormat = '%d-%m-%Y')) %>%
       hc_yAxis(title = list(text = "Frecuencia")) %>%
       hc_add_series(dplyr::filter(casos2z, between(month(fecha), var1, var2)), "column", hcaes(x = fecha, y = casos), color = "steelblue", name = "Casos diarios") %>%
       hc_add_series(dplyr::filter(casos2z, between(month(fecha), var1, var2)), "line", hcaes(x = fecha, y = media), name = "Media 7 días", color = "maroon") %>%
       hc_plotOptions(line = list(dataLabels = list(enabled = F),
                                  enableMouseTracking = T),
                      column = list(groupPadding = 0,
-                                   pointPadding = 0))
+                                   pointPadding = 0)) 
+        
+       
     
     hc %>%
       hc_title(text = "Casos diarios y media movil 7 días") %>%
-      hc_subtitle(text = "Zona Sanitaria VIII")  %>%
+      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020")  %>%
       hc_caption(
         text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
       hc_exporting(
@@ -659,9 +664,10 @@ hc %>%
     etiqueta_mapa <- case_when(
       input$info == "Casos" ~ "Casos positivos acumulados",
       input$info == "Activos" ~ "Casos positivos activos",
-      input$info == "Incidencia" ~ "Incidencia acumulada x 100000 hab.",
+      input$info == "Incidencia" ~ "Incidencia acumulada <br> x 100.000 hab.",
       input$info == "Fallecidos" ~ "Fallecidos acumulados",
-      input$info == "Mortalidad" ~ "Tasa de mortalidad x 1000000 hab.",
+      input$info == "Mortalidad" ~ "Tasa de mortalidad bruta <br> x 1.000.000 hab.",
+      input$info == "Mortalidad_aj" ~ "Tasa de mortalidad ajus. <br> x 1.000.000 hab."
     )
     
     color_mapa <- case_when(
@@ -669,7 +675,8 @@ hc %>%
       input$info == "Activos" ~ "YlOrBr",
       input$info == "Incidencia" ~ "YlGnBu",
       input$info == "Fallecidos" ~"OrRd",
-      input$info == "Mortalidad" ~ "PuBu"
+      input$info == "Mortalidad" ~ "PuBu",
+      input$info == "Mortalidad_aj" ~ "YlGnBu"
     )
     
     popu <- case_when(
@@ -677,15 +684,21 @@ hc %>%
       input$info == "Activos" ~ "Activos",
       input$info == "Incidencia" ~ "Incidencia",
       input$info == "Fallecidos" ~"Fallecidos",
-      input$info == "Mortalidad" ~ "Mortalidad"
+      input$info == "Mortalidad" ~ "Mortalidad",
+      input$info == "Mortalidad_aj" ~ "Mortalidad_aj"
     )
     
     xx <- c("Casos", "Laboratorio", "Epidemiologia", "Sospechosos")
+    xxx <- c("Fallecidos", "Letalidad")
+    
     
     if (popu == "Casos") {
       popu <- xx
     }
 
+    if (popu == "Fallecidos") {
+      popu <- xxx
+    }
   
   #   bins <- c(0,getJenksBreaks(datos_mapa, 5), +Inf)
   # #  bins <- c(0,seq(from = min(datos_mapa), to = max(datos_mapa), length.out = 3), +Inf)
@@ -770,7 +783,7 @@ hc %>%
     
     hc %>%
       hc_title(text = "Incidencia acumulada cada 100.000 habitantes por partido") %>%
-      hc_subtitle(text = "Zona Sanitaria VIII")  %>%
+      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020")  %>%
       hc_caption(
         text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
       hc_exporting(
@@ -826,7 +839,7 @@ hc %>%
     
     hc %>%
       hc_title(text = "Tasa de mortalidad por 1.000.000 habitantes por partido") %>%
-      hc_subtitle(text = "Zona Sanitaria VIII")  %>%
+      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020")  %>%
       hc_caption(
         text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
       hc_exporting(
@@ -843,5 +856,284 @@ hc %>%
       )
     
   })
+  
+  
+  output$mort_zona_aj <- renderHighchart({
+    
+    # Definir opciones de exportación
+    export <- list(
+      list(
+        text = "PNG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/png' }); }")
+      ),
+      list(
+        text = "JPEG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/jpeg' }); }")
+      ),
+      list(
+        text = "SVG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/svg+xml' }); }")
+      ),
+      list(
+        text = "PDF",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'application/pdf' }); }")
+      )
+    )
+    
+    mort <- acum_zona %>% arrange(desc(Mortalidad_aj))  
+    
+    hc <- highchart() %>%
+      hc_xAxis(type = "category", labels = list(rotation = 45, step = 1, padding = 1)) %>%
+      hc_yAxis(title = list(text = "Mortalidad ajustada c/1.000.000 hab.")) %>%
+      hc_add_series(mort, "column", hcaes(x = partido, y = Mortalidad_aj), name = 'Mortalidad ajustada', color = "saddlebrown") %>% 
+      hc_plotOptions(column = list(enableMouseTracking = T),
+                     lang = list(decimalPoint = ",",
+                                 thousandsSep = "."))
+    
+    hc %>%
+      hc_title(text = "Tasa de mortalidad ajustada por 1.000.000 habitantes por partido") %>%
+      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020")  %>%
+      hc_caption(
+        text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
+      hc_exporting(
+        enabled = TRUE,
+        formAttributes = list(target = "_blank"),
+        buttons = list(contextButton = list(
+          symbol = "menu",
+          theme = list(fill = "transparent"),
+          align = "right",
+          verticalAlign = "top",
+          width = 20,
+          menuItems = export
+        ))
+      )
+    
+  })
+  
+  
+  output$tree <- renderHighchart({
+  
+    options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 0)))
+    
+   tree <-  diag_diario %>% 
+      mutate(porc = round(positivos/sum(positivos)*100,2)) %>% 
+        treemap(index = "partido",
+            vSize = "positivos", vColor = "porc",
+            type = "value", palette = "YlOrRd", draw = F)
+    
+    hctreemap(tree, allowDrillToNode = TRUE) %>% 
+      hc_title(text = paste0("Distribución de nuevos casos positivos por partido - ", toString(format(ultimo_zona$fecha[1], format = "%d %b %Y")))) %>% 
+      hc_tooltip(pointFormat = "<b>{point.name}</b>:<br>
+                             Casos: {point.value:,.0f}<br>
+                             Proporción: {point.valuecolor:,.2f} %")
+
+  })
+    
+  
+  output$inc_partidos <- renderHighchart({
+    
+    # Definir opciones de exportación
+    export <- list(
+      list(
+        text = "PNG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/png' }); }")
+      ),
+      list(
+        text = "JPEG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/jpeg' }); }")
+      ),
+      list(
+        text = "SVG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/svg+xml' }); }")
+      ),
+      list(
+        text = "PDF",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'application/pdf' }); }")
+      )
+    )
+  
+    acum2 <- pos_acum %>%
+      arrange(partido) %>% 
+      select(-acumulados) %>%
+      pivot_wider(names_from = partido, values_from = casos) 
+    
+    
+    inicio <- min(acum2$fecha)
+    final <- max(acum2$fecha)
+    
+    casos3 <- tibble(
+      fecha = seq.Date(from = inicio, to = final, by = "day")
+    )  
+    
+    casos3 <- casos3 %>% left_join(acum2)
+    
+    casos3 <- casos3 %>%  mutate(across(where(is.numeric), ~replace_na(.x, replace = 0)))
+    
+    casos3 <- casos3 %>%  mutate(across(where(is.numeric), ~cumsum(.x)))
+    
+    for (i in 1:16) {
+      
+      j = i+1
+      
+      casos3[,j] <- round(casos3[,j]/pob$Poblacion_2020[i]*100000,1)
+      
+    }
+    
+    casos3 <- casos3 %>% filter(fecha > as.Date("2020-05-31"))
+    
+    casos3 <- casos3 %>%  pivot_longer(2:17, names_to = "Partido", values_to = "Incidencia")  
+    
+    hc <-  hchart(casos3, "line", hcaes(x = fecha, y = Incidencia, group = Partido)) %>% 
+      hc_plotOptions(line = list(dataLabels = list(enabled = F),
+                                 enableMouseTracking = T),
+                     
+                     lang = list(decimalPoint = ",",
+                                 thousandsSep = ".")) %>% 
+      hc_tooltip(table = T, sort = T)
+    
+    hc %>% hc_title(text = "Evolución de la incidencia acumulada por 100.000 habitantes comparativa según partido") %>%
+      hc_subtitle(text = "Partidos de la Zona Sanitaria VIII - Año 2020")  %>%
+      hc_caption(
+        text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación -
+                (se muestran valores desde junio/2020 cuando comenzó el incremento de casos") %>%
+      hc_exporting(
+        enabled = TRUE,
+        formAttributes = list(target = "_blank"),
+        buttons = list(contextButton = list(
+          symbol = "menu",
+          theme = list(fill = "transparent"),
+          align = "right",
+          verticalAlign = "top",
+          width = 20,
+          menuItems = export
+        ))
+      ) 
+    
+    
+    
+    
+  })
+    # output$tbl1 <-  renderDT(
+    #   principal %>% 
+    #     filter(clasificacion_resumen == "Confirmado") %>% 
+    #     select(residencia_departamento_nombre, fecha) %>% 
+    #     rename(Partido = "residencia_departamento_nombre", 
+    #            Fecha = "fecha") %>% 
+    #     count(Partido, Fecha, name = "Cantidad") %>% 
+    #     mutate(Partido  = as.factor(Partido))  %>% 
+    #     datatable(rownames = F, 
+    #               width = "100%",
+    #               height = "100%",
+    #               #extensions = 'Scroller',
+    #               filter = list(position = 'top'),
+    #               style = "bootstrap4",
+    #               #colnames = c('Partido', 'Fecha', 'SEpi', 'Sexo', 'Grupo etario', 'Clasificación', 'Activo', 'Fallecido', 'Fecha fallecimiento', 'Clasificación resumen'),
+    #               class = 'display cell-border stripe',
+    #               options = list(autoWidth = TRUE, 
+    #                              pageLength = 15,
+    #                              language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
+    #                              searchHighlight = F
+    #                              #scrollX = T
+    #                              #deferRender = TRUE,
+    #                              #scrollY = 500,
+    #                              #scroller = TRUE
+    #                              
+    #               )) %>% 
+    #     formatStyle('Partido', fontWeight = 'bold'
+    #                 
+    #     )
+    #   
+    # )
+    # 
+    # individuales <- principal %>% 
+    #   filter(clasificacion_resumen == "Confirmado") %>% 
+    #   select(residencia_departamento_nombre, fecha) %>% 
+    #   rename(Partido = "residencia_departamento_nombre", 
+    #          Fecha = "fecha") %>% 
+    #   count(Partido, Fecha, name = "Cantidad") %>% 
+    #   mutate(Partido  = as.factor(Partido))
+    # 
+    # output$descarga <- downloadHandler(
+    #   filename = function(){"casos_diarios.csv"},
+    #   content = function(file){
+    #     write.csv(individuales, file)
+    #   }
+    # )
+    # 
+    # output$tbl2 <-  renderDT(
+    #   acum_zona %>% 
+    #     select(-Poblacion_2020) %>% 
+    #     rename(Partido = "partido")  %>% 
+    #     datatable(rownames = F, 
+    #               #colnames = c('Partido', 'Fecha', 'SEpi', 'Sexo', 'Grupo etario', 'Clasificación', 'Activo', 'Fallecido', 'Fecha fallecimiento', 'Clasificación resumen'),
+    #               class = 'cell-border stripe',
+    #               style = "bootstrap4",
+    #               width = "100vw",
+    #               extensions = c('Buttons','Scroller'),
+    #               options = list(autoWidth = TRUE, 
+    #                              pageLength = 16,
+    #                              dom = 'Bfrtip',
+    #                              buttons = list(
+    #                                list(
+    #                                  extend = 'csv',
+    #                                  title = 'acumulados'), 
+    #                                list(
+    #                                  extend = 'excel',
+    #                                  title = 'acumulados'),
+    #                                list(
+    #                                  extend = 'pdf',
+    #                                  title = 'acumulados'),
+    #                                list(
+    #                                  extend = 'copy',
+    #                                  text = "Copiar"),
+    #                                list(
+    #                                  extend = 'print',
+    #                                  text = "Imprimir")
+    #                              ),
+    #                              scrollX = TRUE,
+    #                              language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
+    #                              #deferRender = TRUE,
+    #                              #scrollY = 500,
+    #                              pageLength = 16
+    #                              #scroller = TRUE,
+    #                               # declare titles
+    #                              )) %>% 
+    #     formatStyle('Partido', fontWeight = 'bold') %>% 
+    #     formatStyle(
+    #       'Incidencia',
+    #       color = styleInterval(c(1000, 3000), c('green', 'orange', 'red'))
+    #     )
+    # )
+    # 
+    # output$tbl3 <-  renderReactable(
+    # 
+    #     reactable(mfalle, defaultColDef = colDef(
+    #     style = function(value) {
+    #       if (!is.numeric(value)) return()
+    #       normalized <- (value - min(mfalle)) / (max(mfalle) - min(mfalle))
+    #       color <- GnYlRd(normalized)
+    #       list(background = color)
+    #     },
+    #     minWidth = 50
+    #   ),
+    #   columns = list(
+    #     .rownames = colDef(name = "Partido", sortable = TRUE, align = "left")
+    #   ),
+    #   bordered = TRUE,
+    #   width = "100%",
+    #   fullWidth = T,
+    #   pagination = F
+    #   ) 
+    # )
+    # 
+    
   
 }
