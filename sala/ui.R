@@ -82,6 +82,14 @@ body <- dashboardBody(
                          box(title = "", status = "primary", 
                              highchartOutput("inc_partidos", height = "600px"), width = NULL,
                              footer = strong("*calculada a partir del cociente de los casos positivos confirmados sobre la población de cada partido proyectada por el INDEC en 2020 acumulada progresivamente en cada fecha por 100.000"))
+                ), 
+                tabPanel("Casos por edad y sexo", "",
+                         box(title = "", status = "primary", 
+                             highchartOutput("zonasexedad", height = "600px"), width = NULL)
+                 ),
+                tabPanel("Fallecidos por edad y sexo", "",
+                         box(title = "", status = "primary", 
+                             highchartOutput("zonafalle_se", height = "600px"), width = NULL)
                 )
                 ) #tabBox
                ) #fluidRow

@@ -64,7 +64,7 @@ server <- function(input, output, session) {
   
   output$zona4 <- renderVal <- renderValueBox({
     valueBox(value = tags$p(ultimo_zona[1,5], style = "font-size: 70%;"), 
-             subtitle = tags$p("Por laboratorio (PCR)", style = "font-size: 90%;"),  
+             subtitle = tags$p("Por laboratorio", style = "font-size: 90%;"),  
              icon = icon(name = "microscope"),
              color = "orange"
     )
@@ -299,22 +299,216 @@ server <- function(input, output, session) {
   #   )
   # }) 
   # 
+  
+  output$zonasexedad <- renderHighchart({
+    
+    sex_edad_zona <- pos_sex_edad %>% 
+      group_by(grupo_edad) %>% 
+      summarise(M = sum(M, na.rm = T), F = sum(F, na.rm = T)) %>% 
+      arrange(grupo_edad) 
+    
+    categorias <- sex_edad_zona %>%
+      drop_na() %>% 
+      pull(grupo_edad)
+    
+    hombres <- sex_edad_zona %>% 
+      drop_na() %>%
+      mutate(M = M*-1) %>% 
+      pull(M)
+    
+    mujeres <- sex_edad_zona %>% 
+      drop_na() %>%
+      pull(F)
+    
+    # Definir opciones de exportación
+    export <- list(
+      list(
+        text = "PNG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/png' }); }")
+      ),
+      list(
+        text = "JPEG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/jpeg' }); }")
+      ),
+      list(
+        text = "SVG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/svg+xml' }); }")
+      ),
+      list(
+        text = "PDF",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'application/pdf' }); }")
+      )
+    )
+    
+    hc <- highchart() %>% 
+      hc_chart(type= 'bar') %>%
+      
+      hc_xAxis(
+        list(categories=categorias,reversed=FALSE,labels=list(step= 1)),
+        list(categories= categorias,opposite= TRUE,reversed= FALSE,linkedTo= 0,labels=list(step= 1))) %>%
+      
+      hc_tooltip(
+        shared = FALSE,
+        formatter = JS("function () {
+                       return this.point.category + '<br/>' +
+                       '<b>' + this.series.name + '</b> ' +
+                       Highcharts.numberFormat(Math.abs(this.point.y),0);}")
+      )%>%
+      
+      hc_yAxis(title= list(text= "Frecuencia"),
+               labels=list(formatter=JS("function () {
+                   return Math.abs(this.value);
+                 }")))%>%
+      
+      hc_plotOptions(series=list(stacking= 'normal'),
+                     bar = list(groupPadding = 0,
+                                pointPadding = 0)) %>%
+      
+      hc_series(
+        list(name= 'Hombres',
+             data= hombres, 
+             color = "olivedrab"),
+        
+        list(name= 'Mujeres',
+             data= mujeres,
+             color = "purple"))  
+    
+    hc %>% hc_title(text = "Distribución de casos COVID-19 por edad y sexo") %>% 
+      hc_subtitle(text = "Zona Sanitaria VIII") %>%
+      hc_caption(
+        text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>% 
+      hc_exporting(
+        enabled = TRUE,
+        formAttributes = list(target = "_blank"),
+        buttons = list(contextButton = list(
+          symbol = "menu",
+          theme = list(fill = "transparent"),
+          align = "right",
+          verticalAlign = "top",
+          width = 20,
+          menuItems = export
+        ))
+      )
+    
+  })
+  
+  output$zonafalle_se <- renderHighchart({
+    
+    falle_sex_edad_zona <- fallecidos %>% 
+      filter(clasificacion_resumen == "Confirmado", sexo != "NR") %>% 
+      count(sexo,grupo_edad) %>% 
+      pivot_wider(names_from = sexo, values_from = n) %>% 
+      replace_na(list(F = 0, M = 0)) %>% arrange(grupo_edad) 
+    
+    
+    categorias <- falle_sex_edad_zona %>%
+      drop_na() %>% 
+      pull(grupo_edad)
+    
+    hombres <- falle_sex_edad_zona %>% 
+      drop_na() %>%
+      mutate(M = M*-1) %>% 
+      pull(M)
+    
+    mujeres <- falle_sex_edad_zona %>% 
+      drop_na() %>%
+      pull(F)
+    
+    # Definir opciones de exportación
+    export <- list(
+      list(
+        text = "PNG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/png' }); }")
+      ),
+      list(
+        text = "JPEG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/jpeg' }); }")
+      ),
+      list(
+        text = "SVG",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'image/svg+xml' }); }")
+      ),
+      list(
+        text = "PDF",
+        onclick = JS("function () {
+                   this.exportChart({ type: 'application/pdf' }); }")
+      )
+    )
+    
+    hc <- highchart() %>% 
+      hc_chart(type= 'bar') %>%
+      
+      hc_xAxis(
+        list(categories=categorias,reversed=FALSE,labels=list(step= 1)),
+        list(categories= categorias,opposite= TRUE,reversed= FALSE,linkedTo= 0,labels=list(step= 1))) %>%
+      
+      hc_tooltip(
+        shared = FALSE,
+        formatter = JS("function () {
+                       return this.point.category + '<br/>' +
+                       '<b>' + this.series.name + '</b> ' +
+                       Highcharts.numberFormat(Math.abs(this.point.y),0);}")
+      )%>%
+      
+      hc_yAxis(title= list(text= "Frecuencia"),
+               labels=list(formatter=JS("function () {
+                   return Math.abs(this.value);
+                 }")))%>%
+      
+      hc_plotOptions(series=list(stacking= 'normal'),
+                     bar = list(groupPadding = 0,
+                                pointPadding = 0)) %>%
+      
+      hc_series(
+        list(name= 'Hombres',
+             data= hombres, 
+             color = "navy"),
+        
+        list(name= 'Mujeres',
+             data= mujeres,
+             color = "salmon"))  
+    
+    hc %>% hc_title(text = "Distribución de fallecidos COVID-19 por edad y sexo") %>% 
+      hc_subtitle(text = "Zona Sanitaria VIII") %>%
+      hc_caption(
+        text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>% 
+      hc_exporting(
+        enabled = TRUE,
+        formAttributes = list(target = "_blank"),
+        buttons = list(contextButton = list(
+          symbol = "menu",
+          theme = list(fill = "transparent"),
+          align = "right",
+          verticalAlign = "top",
+          width = 20,
+          menuItems = export
+        ))
+      )
+    
+  })
+  
    output$sexedad <- renderHighchart({
   
-    categorias <- pos_sex_edad %>%
-        drop_na() %>% 
-        filter(partido == input$partido) %>% 
+    data_sexedad <-  pos_sex_edad %>%
+      drop_na() %>% 
+      filter(partido == input$partido) %>% 
+      arrange(grupo_edad)
+     
+    categorias <- data_sexedad %>%
         pull(grupo_edad)
       
-      hombres <- pos_sex_edad %>% 
-        drop_na() %>%
-        filter(partido == input$partido) %>% 
+      hombres <- data_sexedad %>% 
         mutate(M = M*-1) %>% 
         pull(M)
       
-      mujeres <- pos_sex_edad %>% 
-        drop_na() %>%
-        filter(partido == input$partido) %>% 
+      mujeres <- data_sexedad %>% 
         pull(F)
     
       # Definir opciones de exportación
@@ -356,7 +550,7 @@ server <- function(input, output, session) {
                        Highcharts.numberFormat(Math.abs(this.point.y),0);}")
         )%>%
         
-        hc_yAxis(title= list(text= NULL),
+        hc_yAxis(title= list(text= "Frecuencia"),
                  labels=list(formatter=JS("function () {
                    return Math.abs(this.value);
                  }")))%>%
