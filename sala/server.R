@@ -159,6 +159,25 @@ server <- function(input, output, session) {
     )
   })
   
+  output$tbl3 <-  renderReactable(
+
+      reactable(deter_zona, 
+      #minWidth = 50
+      columns = list(
+        partido = colDef(name = "Partido"),
+        total = colDef(name = "Analizados"),
+        pos = colDef(name = "Positivos"),
+        porc = colDef(name = "Positividad (%)")
+      ),
+      defaultPageSize = 16,
+      showPagination = F
+    )
+    )
+  
+
+  
+  
+  
   output$part_1 <- renderVal <- renderValueBox({
     valueBox(value = tags$p(filter(acum_zona, partido == input$partido)[2], style = "font-size: 70%;"),
              subtitle = tags$p("Total acumulados", style = "font-size: 90%;"),
@@ -592,12 +611,15 @@ server <- function(input, output, session) {
   output$posi <- renderHighchart({
   
    positivos <- pos_acum %>% 
-     mutate(sepi = epiweek(fecha)) %>% 
-     group_by(partido, sepi) %>% 
+     mutate(sepi = epiweek(fecha),
+            yepi = epiyear(fecha)) %>% 
+     group_by(partido, yepi, sepi) %>% 
      summarise(Casos = sum(casos, na.rm = T)) %>% 
      filter(partido == input$partido) %>% 
-        mutate(Acumulados = cumsum(Casos)) %>% 
-     ungroup()
+     ungroup() %>% 
+     arrange(yepi,sepi) %>% 
+        mutate(Acumulados = cumsum(Casos),
+               sepi = paste0(yepi, " / ", sepi)) 
    
    # Definir opciones de exportación
    export <- list(
@@ -625,7 +647,7 @@ server <- function(input, output, session) {
    
    
 hc <- highchart() %>% 
-     hc_xAxis(type = "linear", labels = list(step = 1), title = list(text = "Semana epidemiológica")) %>% 
+     hc_xAxis(type = "linear", categories = positivos$sepi, labels = list(step = 5, rotation = -45), title = list(text = "Semana epidemiológica")) %>% 
      hc_yAxis_multiples(list(title = list(text = "Nro. de confirmados"), opposite = F),
                         list(type = "logarithmic", title = list(text = "Acumulados (log)"), opposite = T)) %>%
      hc_plotOptions(line = list(dataLabels = list(enabled = F),
@@ -722,8 +744,8 @@ hc %>%
    hc <- highchart() %>%
      hc_xAxis(type = "datetime", labels = list(rotation = 90, step = 1, padding = 1)) %>%
      hc_yAxis(title = list(text = "Frecuencia")) %>%
-     hc_add_series(dplyr::filter(casos2, between(month(fecha), var1, var2)), "column", hcaes(x = fecha, y = casos), color = "steelblue", name = "Casos diarios") %>%
-     hc_add_series(dplyr::filter(casos2, between(month(fecha), var1, var2)), "line", hcaes(x = fecha, y = media), name = "Media 7 días", color = "maroon") %>%
+     hc_add_series(dplyr::filter(casos2, between(fecha, var1, var2)), "column", hcaes(x = fecha, y = casos), color = "steelblue", name = "Casos diarios") %>%
+     hc_add_series(dplyr::filter(casos2, between(fecha, var1, var2)), "line", hcaes(x = fecha, y = media), name = "Media 7 días", color = "maroon") %>%
       hc_plotOptions(line = list(dataLabels = list(enabled = F),
                                  enableMouseTracking = T),
                      column = list(groupPadding = 0,
@@ -813,8 +835,8 @@ hc %>%
     hc <- highchart() %>%
       hc_xAxis(type = "datetime", labels = list(rotation = 90, step = 1, padding = 1, xDateFormat = '%d-%m-%Y')) %>%
       hc_yAxis(title = list(text = "Frecuencia")) %>%
-      hc_add_series(dplyr::filter(casos2z, between(month(fecha), var1, var2)), "column", hcaes(x = fecha, y = casos), color = "steelblue", name = "Casos diarios") %>%
-      hc_add_series(dplyr::filter(casos2z, between(month(fecha), var1, var2)), "line", hcaes(x = fecha, y = media), name = "Media 7 días", color = "maroon") %>%
+      hc_add_series(dplyr::filter(casos2z, between(fecha, var1, var2)), "column", hcaes(x = fecha, y = casos), color = "steelblue", name = "Casos diarios") %>%
+      hc_add_series(dplyr::filter(casos2z, between(fecha, var1, var2)), "line", hcaes(x = fecha, y = media), name = "Media 7 días", color = "maroon") %>%
       hc_plotOptions(line = list(dataLabels = list(enabled = F),
                                  enableMouseTracking = T),
                      column = list(groupPadding = 0,
@@ -824,7 +846,7 @@ hc %>%
     
     hc %>%
       hc_title(text = "Casos diarios y media movil 7 días") %>%
-      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020")  %>%
+      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020-2021")  %>%
       hc_caption(
         text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
       hc_exporting(
@@ -977,7 +999,7 @@ hc %>%
     
     hc %>%
       hc_title(text = "Incidencia acumulada cada 100.000 habitantes por partido") %>%
-      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020")  %>%
+      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020-2021")  %>%
       hc_caption(
         text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
       hc_exporting(
@@ -1033,7 +1055,7 @@ hc %>%
     
     hc %>%
       hc_title(text = "Tasa de mortalidad por 1.000.000 habitantes por partido") %>%
-      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020")  %>%
+      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020-2021")  %>%
       hc_caption(
         text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
       hc_exporting(
@@ -1090,7 +1112,7 @@ hc %>%
     
     hc %>%
       hc_title(text = "Tasa de mortalidad ajustada por 1.000.000 habitantes por partido") %>%
-      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020")  %>%
+      hc_subtitle(text = "Zona Sanitaria VIII - Año 2020-2021")  %>%
       hc_caption(
         text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación") %>%
       hc_exporting(
@@ -1194,7 +1216,7 @@ hc %>%
       hc_tooltip(table = T, sort = T)
     
     hc %>% hc_title(text = "Evolución de la incidencia acumulada por 100.000 habitantes comparativa según partido") %>%
-      hc_subtitle(text = "Partidos de la Zona Sanitaria VIII - Año 2020")  %>%
+      hc_subtitle(text = "Partidos de la Zona Sanitaria VIII - Año 2020-2021")  %>%
       hc_caption(
         text = "<b>Fuente:</b> Base SISA publica abierta - Ministerio de Salud de la Nación -
                 (se muestran valores desde junio/2020 cuando comenzó el incremento de casos") %>%

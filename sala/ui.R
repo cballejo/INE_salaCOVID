@@ -35,7 +35,9 @@ body <- dashboardBody(
              tabPanel("Determinaciones", "",             
                     valueBoxOutput("zona3_1"),
                     valueBoxOutput("zona3_2"),
-                    valueBoxOutput("zona3_3")
+                    valueBoxOutput("zona3_3"),
+                    box(title = "", status = "primary", 
+                        reactableOutput("tbl3"), width = 10)
                ) #tabPanel            
              ) #tabBox
           ) #fluidRow
@@ -72,10 +74,7 @@ body <- dashboardBody(
                                  sidebar_title = "Rango de meses",
                                  sidebar_start_open = F,
                                  sidebar_background = "#2E64FE",  
-                                 sidebar_content =  sliderInput("seleccion_fecha", "Seleccione el rango de meses",
-                                                                min = month(min(pos_acum$fecha, na.rm = T)),
-                                                                max = month(max(pos_acum$fecha, na.rm = T)),
-                                                                value = c(month(min(pos_acum$fecha, na.rm = T)), month(max(pos_acum$fecha, na.rm = T)))),
+                                 sidebar_content =  dateRangeInput("seleccion_fecha", "Seleccione el rango de fecha", start = "2020-03-01", end = Sys.Date(), language = "es"),
                              highchartOutput("diario_zona", height = "600px"), width = 12, footer = strong("*calculada a partir del promedio de casos diarios de los 7 días anteriores incluyendo la última fecha para toda la zona sanitaria"))
                   ),#tabPanel
                 tabPanel("Incidencia - evolución comparativa", "",
@@ -128,13 +127,10 @@ body <- dashboardBody(
                         collapsed = T,
                         collapsible = T,
                         sidebar_width = 20,
-                        sidebar_title = "Rango de meses",
+                        sidebar_title = "Rango de fecha",
                         sidebar_start_open = F,
                         sidebar_background = "#2E64FE",  
-                        sidebar_content =  sliderInput("seleccion_fecha1", "Seleccione el rango de meses",
-                                                       min = month(min(pos_acum$fecha, na.rm = T)),
-                                                       max = month(max(pos_acum$fecha, na.rm = T)),
-                                                       value = c(month(min(pos_acum$fecha, na.rm = T)), month(max(pos_acum$fecha, na.rm = T)))),
+                        sidebar_content =  dateRangeInput("seleccion_fecha1", "Seleccione el rango de fecha", start = "2020-03-01", end = Sys.Date(), language = "es"),
                         
                         highchartOutput("diario_partido"), width = NULL)
                     )

@@ -21,7 +21,7 @@ library(sf)
 #library(rdrop2)
 library(waiter)
 library(treemap)
-#library(reactable)
+library(reactable)
 
 
 
